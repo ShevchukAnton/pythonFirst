@@ -1,0 +1,2 @@
+# pythonFirst
+Studying python
