@@ -1,3 +1,3 @@
-from Chapter4 import functions
+from Chapter4.vsearch import vsearch
 
-print(functions.search4vowels("some tricky phrase to test function"))
+print(vsearch.search4vowels("some tricky phrase to test function"))
