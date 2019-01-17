@@ -9,6 +9,7 @@ import subprocess
 import unittest
 from pprint import pprint
 
+import uiautomator
 from appium import webdriver
 
 
@@ -19,7 +20,14 @@ class ChessAndroidTests(unittest.TestCase):
         """Setup for the test"""
 
         subprocess.call('adb devices')
-        subprocess.call('adb install -r ../Resources/Chess.apk')
+        # subprocess.call('adb install -r ../Resources/Chess.apk')
+        d = uiautomator.Device('d575cc380904')
+        pprint(d.info)
+        d.press('home')  # looks like this doesn't work with virtual navigation bar
+        d.press('back')
+        d.screenshot("home.png")
+        d.open.notification()
+        d.screenshot("notifications.png")
         desired_caps = {'platformName': 'Android', 'platformVersion': '8.1', 'deviceName': 'vince',
                         'app': 'C:/Users/anton.shevchuk/PycharmProjects/pythonFirst/Resources/Chess.apk',
                         'appPackage': 'uk.co.aifactory.chessfree', 'appActivity': '.ChessFreeActivity'}
@@ -47,4 +55,4 @@ class ChessAndroidTests(unittest.TestCase):
 # ---START OF SCRIPT
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(ChessAndroidTests)
-    unittest.TextTestRunner(verbosity = 2).run(suite)
+    unittest.TextTestRunner(verbosity=2).run(suite)
