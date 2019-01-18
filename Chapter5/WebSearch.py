@@ -1,5 +1,3 @@
-from pydoc import html
-
 import vsearch
 from flask import Flask, render_template, request, escape
 
@@ -25,13 +23,14 @@ def do_search() -> 'html':
 
 @app.route('/viewlog')
 def view_log() -> 'html':
+    titles = ('Form Data', 'IP', 'User agent', 'Result')
     content = []
     with open('websearch.log') as log:
         for line in log:
             content.append([])
             for item in line.split('|'):
                 content[-1].append(escape(item))
-    return str(content)
+    return render_template('ViewLog.html', the_title='Logging', the_row_titles=titles, the_data=content)
 
 
 @app.route('/')
