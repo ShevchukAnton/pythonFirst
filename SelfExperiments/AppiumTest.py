@@ -1,58 +1,52 @@
 """
-Qxf2: Example script to run one test against the Chess Free app using Appium
+Qxf2: Example script to run one test against the DuckduckGo browser app using Appium
 The test will:
-- launch the app
-- click the 'PLAY!' button
-"""
+- launch the browser
+- search for 'appium'
+- save screenshot"""
 
-import subprocess
 import unittest
-from pprint import pprint
 
-import uiautomator
 from appium import webdriver
 
 
-class ChessAndroidTests(unittest.TestCase):
+class AndroidTests(unittest.TestCase):
     """Class to run tests against the Chess Free app"""
 
     def setUp(self):
         """Setup for the test"""
 
-        subprocess.call('adb devices')
+        # subprocess.call('adb devices')
         # subprocess.call('adb install -r ../Resources/Chess.apk')
-        d = uiautomator.Device('d575cc380904')
-        pprint(d.info)
-        d.press('home')  # looks like this doesn't work with virtual navigation bar
-        d.press('back')
-        d.screenshot("home.png")
-        d.open.notification()
-        d.screenshot("notifications.png")
+        # d = uiautomator.Device('d575cc380904')
+        # pprint(d.info)
+        # d.press('home')  # looks like this doesn't work with virtual navigation bar
+        # d.press('back')
+        # d.screenshot("home.png")
+        # d.open.notification()
+        # d.screenshot("notifications.png")
         desired_caps = {'platformName': 'Android', 'platformVersion': '8.1', 'deviceName': 'vince',
-                        'app': 'C:/Users/anton.shevchuk/PycharmProjects/pythonFirst/Resources/Chess.apk',
-                        'appPackage': 'uk.co.aifactory.chessfree', 'appActivity': '.ChessFreeActivity'}
-        # Returns abs path relative to this file and not cwd
-        # Returns abs path relative to this file and not cwd
+                        'appPackage': 'com.duckduckgo.mobile.android', 'appActivity': 'com.duckduckgo.app.browser.BrowserActivity'}
         self.driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
 
-    # def tearDown(self):
-    #     "Tear down the test"
-    #     self.driver.quit()
+    def tearDown(self):
+        """Tear down the test"""
+        self.driver.quit()
 
     def test_single_player_mode(self):
-        """Test the Chess app launches correctly and click on Play button"""
-        # element = self.driver.find_element_by_id("uk.co.aifactory.chessfree:id/ButtonPlay")
         driver = self.driver
-        element = driver.open_notifications()
+        element = self.driver.find_element_by_id('com.duckduckgo.mobile.android:id/omnibarTextInput')
         # element.click()
-        driver.lock()
-        driver.unlock()
-        print("These are settings:\n")
-        pprint(driver.get_settings())
-        driver.close_app()
+        element.send_keys('appium')
+        driver.get_screenshot_as_file('duck.appium.png')
+        driver.press_keycode(66)
+        driver.wait_activity('com.duckduckgo.mobile.android:id/browserLayout', 5)
+        element = driver.find_element_by_xpath(
+            '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/android.widget.FrameLayout/android.webkit.WebView/android.webkit.WebView/android.view.View/android.view.View[2]/android.view.View[4]/android.view.View/android.view.View/android.view.View[3]/android.view.View')
+        assert element.is_displayed()
 
 
 # ---START OF SCRIPT
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(ChessAndroidTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    suite = unittest.TestLoader().loadTestsFromTestCase(AndroidTests)
+    unittest.TextTestRunner(verbosity = 2).run(suite)

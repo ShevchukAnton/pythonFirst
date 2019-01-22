@@ -1,0 +1,3 @@
+get current activity app and appName:
+    adb shell
+    dumpsys window windows | grep -E 'mCurrentFocus'
