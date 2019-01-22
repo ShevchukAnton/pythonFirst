@@ -1,30 +1,25 @@
-import mysql.connector
 import vsearch
-from flask import Flask, escape, render_template, request
+from flask import Flask, render_template, request
+
+from Chapter5.DBcm import UseDatabase
 
 app = Flask(__name__)
+app.config['dbconfigs'] = {
+    "host": "127.0.0.1",
+    "user": "websearch",
+    "password": "search",
+    "database": "vsearchlogdb"
+}
 
 
 def log_request(req: 'flask_request', res: str) -> None:
-    dbconfig = {
-        "host": "127.0.0.1",
-        "user": "websearch",
-        "password": "search",
-        "database": "vsearchlogdb"
-    }
-
-    conn = mysql.connector.connect(**dbconfig)
-    cursor = conn.cursor()
-
     _sqlInsert = """insert into logs
     (phrase, letters, ip, user_agent, results)
     values
     (%s, %s, %s, %s, %s)"""
 
-    cursor.execute(_sqlInsert, (req.form['phrase'], req.form['letters'], req.remote_addr, req.user_agent.browser, res))
-    conn.commit()
-    cursor.close()
-    conn.close()
+    with UseDatabase(app.config['dbconfigs']) as cursor:
+        cursor.execute(_sqlInsert, (req.form['phrase'], req.form['letters'], req.remote_addr, req.user_agent.browser, res))
 
 
 @app.route('/search4', methods = ['POST'])  # indicates URL where this function will be invoked and methods that are allowed for this URL
@@ -41,13 +36,12 @@ def do_search() -> 'html':
 
 @app.route('/viewlog')
 def view_log() -> 'html':
-    titles = ('Form Data', 'IP', 'User agent', 'Result')
-    content = []
-    with open('websearch.log') as log:
-        for line in log:
-            content.append([])
-            for item in line.split('|'):
-                content[-1].append(escape(item))
+    titles = ('Phrase', 'Letters', 'IP', 'User agent', 'Result')
+    _sql_select = """select phrase, letters, ip, user_agent, results
+                    from logs"""
+    with UseDatabase(app.config['dbconfigs']) as cursor:
+        cursor.execute(_sql_select)
+        content = cursor.fetchall()
     return render_template('ViewLog.html', the_title = 'Logging', the_row_titles = titles, the_data = content)
 
 
