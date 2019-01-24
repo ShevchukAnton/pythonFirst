@@ -60,7 +60,7 @@ border:             thin dotted gray;
 }
 
 /*** Inputs ***/
-input[type=text] {
+input[type=text], input[type=password] {
   font-size:        115%;
   width:            30em;
 }
