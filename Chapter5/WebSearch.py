@@ -22,7 +22,7 @@ def log_request(req: 'flask_request', res: str) -> None:
         cursor.execute(_sqlInsert, (req.form['phrase'], req.form['letters'], req.remote_addr, req.user_agent.browser, res))
 
 
-@app.route('/search4', methods = ['POST'])  # indicates URL where this function will be invoked and methods that are allowed for this URL
+@app.route('/search4', methods=['POST'])  # indicates URL where this function will be invoked and methods that are allowed for this URL
 def do_search() -> 'html':
     phrase = request.form['phrase']
     letters = request.form['letters']
@@ -31,7 +31,7 @@ def do_search() -> 'html':
     result = str(vsearch.search4letters(phrase, letters))
     # renders template Result.html from the templates folder with provided arguments
     log_request(request, result)
-    return render_template('Results.html', the_title = title, the_phrase = phrase, the_letters = letters, the_results = result)
+    return render_template('Results.html', the_title=title, the_phrase=phrase, the_letters=letters, the_results=result)
 
 
 @app.route('/viewlog')
@@ -42,14 +42,14 @@ def view_log() -> 'html':
     with UseDatabase(app.config['dbconfigs']) as cursor:
         cursor.execute(_sql_select)
         content = cursor.fetchall()
-    return render_template('ViewLog.html', the_title = 'Logging', the_row_titles = titles, the_data = content)
+    return render_template('ViewLog.html', the_title='Logging', the_row_titles=titles, the_data=content)
 
 
 @app.route('/')
 @app.route('/entry')
 def landing_page() -> 'html':
-    return render_template('Entry.html', the_title = 'WebsearchApp')
+    return render_template('Entry.html', the_title='WebsearchApp')
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug=True)
