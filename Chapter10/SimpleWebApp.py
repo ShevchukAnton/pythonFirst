@@ -1,4 +1,4 @@
-from flask import Flask, redirect, session
+from flask import Flask, session
 
 import Chapter10.checkerDecorator as check
 
@@ -9,7 +9,6 @@ app.secret_key = '2h6uwPXTsnjsDodK823n'
 @app.route('/login')
 def do_login() -> str:
     session['logged_in'] = True
-    return redirect('/page1')
     return 'You are now logged in'
 
 
@@ -46,4 +45,4 @@ def page3() -> str:
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug=True)
