@@ -9,15 +9,16 @@ from selenium import webdriver
 
 def test_actually(url, file_with_ids):
     # CHANGE PATH BEFORE USE!!!!!!!!!!!!!!!
-    driver = webdriver.Chrome('D:\Python\pythonFirst\Resources\chromedriver.exe')
+    driver = webdriver.Chrome('G:\chromedriver.exe')
+
+    output = open('G:\Founded_ids.txt', 'w')
 
     with open(file_with_ids, 'r') as file:
-        for line in file:
-            driver.get(url + '?q=' + line)
-            # TODO if id has been found - write it to separate file
-            cont = input('Continue?\n')
-            if cont.lower() == 'no' or cont.lower() == 'n':
-                break
+        for id in file:
+            driver.get(url + '?q=' + id)
+            element = driver.find_element_by_css_selector("[class*='heading-l']")
+            if "No results for" not in element.text:
+                output.write(id + "\n")
 
 
 # 2 args, link and file with IDs
