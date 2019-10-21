@@ -21,8 +21,7 @@ def find_ids(url, file_with_ids):
         exit(1)
 
     driver = webdriver.Chrome(driver_path)
-    ids_file = os.path.join(dirname, 'Resources/Founded_ids.txt')
-    output = open(ids_file, 'w')
+    output = open(os.path.join(dirname, 'Resources/Founded_ids.txt'), 'w')
 
     with open(file_with_ids, 'r') as file:
         for id in file:
