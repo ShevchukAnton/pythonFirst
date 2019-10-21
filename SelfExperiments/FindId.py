@@ -11,13 +11,13 @@ from selenium import webdriver
 def find_ids(url, file_with_ids):
     # parent dir for this project
     dirname = os.path.dirname(os.path.dirname(__file__))
-    osType = platform.system()
-    if 'windows' in osType.lower():
+    os_type = platform.system()
+    if 'windows' in os_type.lower():
         driver_path = os.path.join(dirname, 'Resources/chromedriver')
-    elif 'linux' in osType.lower():
+    elif 'linux' in os_type.lower():
         driver_path = os.path.join(dirname, 'Resources/chromedriver.exe')
     else:
-        print('Cant detect what kind of driver should be used. OS - ' + osType)
+        print('Cant detect what kind of driver should be used. OS - ' + os_type)
         exit(1)
 
     driver = webdriver.Chrome(driver_path)
