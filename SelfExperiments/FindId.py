@@ -1,26 +1,37 @@
 # Before use it, install selenium via pip - `pip install selenium`
 # And download driver for browser that you are going to use (change path to that shit below)
-# Usage example - python FindId.py https://www.acer.com/ac/en/GB/search D:\Python\Resources\ids
-
+# Usage example - `python FindId.py https://www.acer.com/ac/en/GB/search D:\Python\Resources\ids`
+import os
+import platform
 import sys
 
 from selenium import webdriver
 
 
-def test_actually(url, file_with_ids):
-    # CHANGE PATH BEFORE USE!!!!!!!!!!!!!!!
-    driver = webdriver.Chrome('G:\chromedriver.exe')
+def find_ids(url, file_with_ids):
+    # parent dir for this project
+    dirname = os.path.dirname(os.path.dirname(__file__))
+    os_type = platform.system()
+    if 'windows' in os_type.lower():
+        driver_path = os.path.join(dirname, 'Resources/chromedriver.exe')
+    elif 'linux' in os_type.lower():
+        driver_path = os.path.join(dirname, 'Resources/chromedriver')
+    else:
+        print('Cant detect what kind of driver should be used. OS - ' + os_type)
+        exit(1)
 
-    output = open('G:\Founded_ids.txt', 'w')
+    driver = webdriver.Chrome(driver_path)
+    ids_file = os.path.join(dirname, 'Resources/Founded_ids.txt')
+    output = open(ids_file, 'w')
 
     with open(file_with_ids, 'r') as file:
         for id in file:
             driver.get(url + '?q=' + id)
             element = driver.find_element_by_css_selector("[class*='heading-l']")
-            if "No results for" not in element.text:
+            if "No results" not in element.text:
                 output.write(id + "\n")
 
 
 # 2 args, link and file with IDs
 if __name__ == "__main__":
-    test_actually(sys.argv[1], sys.argv[2])
+    find_ids(sys.argv[1], sys.argv[2])
