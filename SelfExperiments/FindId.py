@@ -13,9 +13,9 @@ def find_ids(url, file_with_ids):
     dirname = os.path.dirname(os.path.dirname(__file__))
     os_type = platform.system()
     if 'windows' in os_type.lower():
-        driver_path = os.path.join(dirname, 'Resources/chromedriver')
-    elif 'linux' in os_type.lower():
         driver_path = os.path.join(dirname, 'Resources/chromedriver.exe')
+    elif 'linux' in os_type.lower():
+        driver_path = os.path.join(dirname, 'Resources/chromedriver')
     else:
         print('Cant detect what kind of driver should be used. OS - ' + os_type)
         exit(1)
