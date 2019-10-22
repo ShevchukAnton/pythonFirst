@@ -21,14 +21,17 @@ def find_ids(url, file_with_ids):
         exit(1)
 
     driver = webdriver.Chrome(driver_path)
-    output = open(os.path.join(dirname, 'Resources/Founded_ids.txt'), 'w')
+    founded_ids = open(os.path.join(dirname, 'Resources/Founded_ids.txt'), 'w')
+    not_founded_ids = open(os.path.join(dirname, 'Resources/Not_founded_ids.txt'), 'w')
 
     with open(file_with_ids, 'r') as file:
         for id in file:
             driver.get(url + '?q=' + id)
             element = driver.find_element_by_css_selector("[class*='heading-l']")
             if "No results" not in element.text:
-                output.write(id + "\n")
+                founded_ids.write(id + "\n")
+            else:
+                not_founded_ids.write(id + "\n")
 
 
 # 2 args, link and file with IDs
